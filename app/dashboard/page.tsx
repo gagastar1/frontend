@@ -1,6 +1,13 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function Dashboard() {
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    window.location.href = '/auth';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       {/* Header */}
@@ -12,10 +19,7 @@ export default function Dashboard() {
               <p className="text-green-100 mt-2">Comprehensive Wildlife and Resource Management</p>
             </div>
             <button
-              onClick={() => {
-                localStorage.removeItem('user');
-                window.location.href = '/auth';
-              }}
+              onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
             >
               Logout
