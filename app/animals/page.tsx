@@ -34,7 +34,7 @@ export default function AnimalsPage() {
   };
 
   const handleEdit = (animal: Animal) => {
-    setEditingId(animal.id);
+    setEditingId(animal.animalId!);
     setFormData(animal);
     setShowAddForm(false);
     setShowEditForm(true);
@@ -42,9 +42,9 @@ export default function AnimalsPage() {
   };
 
   const handleUpdate = (animal: Animal) => {
-    setEditingId(animal.id);
+    setEditingId(animal.animalId!);
     setFormData({
-      populationCount: animal.populationCount,
+      count: animal.count,
       zone: animal.zone,
       conservationStatus: animal.conservationStatus
     });
@@ -71,11 +71,11 @@ export default function AnimalsPage() {
       if (editingId && (showEditForm || showUpdateForm)) {
         // For update form, only update specific fields
         if (showUpdateForm) {
-          const currentAnimal = animals.find(a => a.id === editingId);
+          const currentAnimal = animals.find(a => a.animalId === editingId);
           if (currentAnimal) {
             const updatedAnimal = {
               ...currentAnimal,
-              populationCount: formData.populationCount ?? currentAnimal.populationCount,
+              count: formData.count ?? currentAnimal.count,
               zone: formData.zone ?? currentAnimal.zone,
               conservationStatus: formData.conservationStatus ?? currentAnimal.conservationStatus
             };
@@ -117,11 +117,14 @@ export default function AnimalsPage() {
     setShowUpdateForm(false);
     setEditingId(null);
     setFormData({
-      species: '',
-      populationCount: 0,
+      name: '',
+      scientificName: '',
+      speciesType: '',
+      count: 0,
       zone: '',
+      location: '',
       conservationStatus: '',
-      lastSeen: new Date().toISOString().split('T')[0]
+      lastSightingDate: new Date().toISOString().split('T')[0]
     });
   };
 
@@ -132,7 +135,7 @@ export default function AnimalsPage() {
         const data = await animalAPI.getByZone(filterZone);
         setAnimals(data);
       } else if (filterStatus) {
-        const data = await animalAPI.getByStatus(filterStatus);
+        const data = await animalAPI.getByConservationStatus(filterStatus);
         setAnimals(data);
       } else {
         await fetchAnimals();
@@ -223,8 +226,8 @@ export default function AnimalsPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Population Count</label>
                   <input
                   type="number"
-                  value={formData.populationCount || 0}
-                  onChange={(e) => setFormData({ ...formData, populationCount: parseInt(e.target.value) })}
+                  value={formData.count || 0}
+                  onChange={(e) => setFormData({ ...formData, count: parseInt(e.target.value) })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
                   />
                 </div>
@@ -258,22 +261,52 @@ export default function AnimalsPage() {
               // Full Form - All Fields for Add and Edit
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Species</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
                   <input
                     type="text"
-                  value={formData.species || ''}
-                  onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                  value={formData.name || ''}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
                   placeholder="e.g., Bengal Tiger"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Scientific Name</label>
+                  <input
+                    type="text"
+                    value={formData.scientificName || ''}
+                    onChange={(e) => setFormData({ ...formData, scientificName: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
+                    placeholder="e.g., Panthera tigris tigris"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Species Type</label>
+                  <input
+                    type="text"
+                    value={formData.speciesType || ''}
+                    onChange={(e) => setFormData({ ...formData, speciesType: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
+                    placeholder="e.g., Mammal"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Population Count</label>
                   <input
                     type="number"
-                    value={formData.populationCount || 0}
-                    onChange={(e) => setFormData({ ...formData, populationCount: parseInt(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    value={formData.count || 0}
+                    onChange={(e) => setFormData({ ...formData, count: parseInt(e.target.value) })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                  <input
+                    type="text"
+                    value={formData.location || ''}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
+                    placeholder="e.g., North Forest Area"
                   />
                 </div>
                 <div>
@@ -302,11 +335,11 @@ export default function AnimalsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Last Seen</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Last Sighting Date</label>
                   <input
                     type="date"
-                  value={formData.lastSeen || ''}
-                  onChange={(e) => setFormData({ ...formData, lastSeen: e.target.value })}
+                  value={formData.lastSightingDate || ''}
+                  onChange={(e) => setFormData({ ...formData, lastSightingDate: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
                   />
                 </div>
@@ -336,10 +369,12 @@ export default function AnimalsPage() {
               <thead className="bg-gradient-to-r from-orange-600 to-orange-500 text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">ID</th>
-                  <th className="px-6 py-4 text-left font-semibold">Species</th>
-                  <th className="px-6 py-4 text-left font-semibold">Population</th>
+                  <th className="px-6 py-4 text-left font-semibold">Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Scientific Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Type</th>
+                  <th className="px-6 py-4 text-left font-semibold">Count</th>
                   <th className="px-6 py-4 text-left font-semibold">Zone</th>
-                  <th className="px-6 py-4 text-left font-semibold">Conservation Status</th>
+                  <th className="px-6 py-4 text-left font-semibold">Status</th>
                   <th className="px-6 py-4 text-left font-semibold">Last Seen</th>
                   <th className="px-6 py-4 text-left font-semibold">Actions</th>
                 </tr>
@@ -347,7 +382,7 @@ export default function AnimalsPage() {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
                       </div>
@@ -355,21 +390,23 @@ export default function AnimalsPage() {
                   </tr>
                 ) : animals.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       No animals found. Add your first animal to get started!
                     </td>
                   </tr>
                 ) : (
                   animals.map((animal, index) => (
                     <tr
-                      key={animal.id}
+                      key={animal.animalId}
                       className={`hover:bg-orange-50 transition-colors ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       }`}
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">{animal.id}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{animal.species}</td>
-                      <td className="px-6 py-4 text-gray-700">{animal.populationCount}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{animal.animalId}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{animal.name}</td>
+                      <td className="px-6 py-4 text-gray-700">{animal.scientificName}</td>
+                      <td className="px-6 py-4 text-gray-700">{animal.speciesType}</td>
+                      <td className="px-6 py-4 text-gray-700">{animal.count}</td>
                       <td className="px-6 py-4 text-gray-700">{animal.zone}</td>
                       <td className="px-6 py-4">
                         <span
@@ -385,7 +422,7 @@ export default function AnimalsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-gray-700">
-                        {animal.lastSeen ? new Date(animal.lastSeen).toLocaleDateString() : 'N/A'}
+                        {animal.lastSightingDate ? new Date(animal.lastSightingDate).toLocaleDateString() : 'N/A'}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
@@ -404,7 +441,7 @@ export default function AnimalsPage() {
                             Update
                           </button>
                           <button
-                            onClick={() => handleDelete(animal.id)}
+                            onClick={() => handleDelete(animal.animalId!)}
                             className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
@@ -428,7 +465,7 @@ export default function AnimalsPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Total Population</h3>
             <p className="text-3xl font-bold text-orange-600">
-              {animals.reduce((sum, a) => sum + (a.populationCount || 0), 0)}
+              {animals.reduce((sum, a) => sum + (a.count || 0), 0)}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
