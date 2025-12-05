@@ -143,7 +143,7 @@ export default function VisitorsPage() {
                 type="date"
                 value={filterStartDate}
                 onChange={(e) => setFilterStartDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
               />
             </div>
             <div>
@@ -152,7 +152,7 @@ export default function VisitorsPage() {
                 type="date"
                 value={filterEndDate}
                 onChange={(e) => setFilterEndDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
               />
             </div>
             <div className="flex items-end">
@@ -186,7 +186,7 @@ export default function VisitorsPage() {
                   type="text"
                   value={formData.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                   placeholder="e.g., Jane Smith"
                 />
               </div>
@@ -196,7 +196,7 @@ export default function VisitorsPage() {
                   type="text"
                   value={formData.contactNumber || ''}
                   onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                   placeholder="e.g., +1234567890"
                 />
               </div>
@@ -206,7 +206,7 @@ export default function VisitorsPage() {
                   type="date"
                   value={formData.visitDate || ''}
                   onChange={(e) => setFormData({ ...formData, visitDate: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                 />
               </div>
               <div>
@@ -215,7 +215,7 @@ export default function VisitorsPage() {
                   type="text"
                   value={formData.zone || ''}
                   onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                   placeholder="e.g., Zone A"
                 />
               </div>
@@ -225,7 +225,7 @@ export default function VisitorsPage() {
                   type="text"
                   value={formData.permitNumber || ''}
                   onChange={(e) => setFormData({ ...formData, permitNumber: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                   placeholder="e.g., PER-2025-001"
                 />
               </div>

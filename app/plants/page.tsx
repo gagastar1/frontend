@@ -150,7 +150,7 @@ export default function PlantsPage() {
                   type="text"
                   value={formData.species || ''}
                   onChange={(e) => setFormData({ ...formData, species: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
                   placeholder="e.g., Aloe Vera"
                 />
               </div>
@@ -161,7 +161,7 @@ export default function PlantsPage() {
                   step="0.1"
                   value={formData.coverage || 0}
                   onChange={(e) => setFormData({ ...formData, coverage: parseFloat(e.target.value) })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
                 />
               </div>
               <div>
@@ -170,7 +170,7 @@ export default function PlantsPage() {
                   type="text"
                   value={formData.medicinalUse || ''}
                   onChange={(e) => setFormData({ ...formData, medicinalUse: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
                   placeholder="e.g., Skin care, wound healing"
                 />
               </div>
@@ -180,7 +180,7 @@ export default function PlantsPage() {
                   type="text"
                   value={formData.zone || ''}
                   onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
                   placeholder="e.g., Zone A"
                 />
               </div>

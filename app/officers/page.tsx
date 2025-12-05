@@ -11,6 +11,8 @@ export default function OfficersPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Partial<ForestOfficer>>({});
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditStatusForm, setShowEditStatusForm] = useState(false);
+  const [showUpdateDataForm, setShowUpdateDataForm] = useState(false);
   const [filterZone, setFilterZone] = useState('');
 
   useEffect(() => {
@@ -30,10 +32,25 @@ export default function OfficersPage() {
     }
   };
 
-  const handleEdit = (officer: ForestOfficer) => {
+  const handleEditStatus = (officer: ForestOfficer) => {
     setEditingId(officer.id);
-    setFormData(officer);
+    setFormData({ isActive: officer.isActive });
     setShowAddForm(false);
+    setShowEditStatusForm(true);
+    setShowUpdateDataForm(false);
+  };
+
+  const handleUpdateData = (officer: ForestOfficer) => {
+    setEditingId(officer.id);
+    setFormData({
+      name: officer.name,
+      designation: officer.designation,
+      zone: officer.zone,
+      contactNumber: officer.contactNumber
+    });
+    setShowAddForm(false);
+    setShowEditStatusForm(false);
+    setShowUpdateDataForm(true);
   };
 
   const handleDelete = async (id: number) => {
@@ -51,15 +68,38 @@ export default function OfficersPage() {
 
   const handleSave = async () => {
     try {
-      if (editingId) {
-        await officerAPI.update(editingId, formData as ForestOfficer);
-        alert('Officer updated successfully!');
+      if (editingId && (showEditStatusForm || showUpdateDataForm)) {
+        const currentOfficer = officers.find(o => o.id === editingId);
+        if (currentOfficer) {
+          if (showEditStatusForm) {
+            // Update only status
+            const updatedOfficer = {
+              ...currentOfficer,
+              isActive: formData.isActive ?? currentOfficer.isActive
+            };
+            await officerAPI.update(editingId, updatedOfficer);
+            alert('Officer status updated successfully!');
+          } else {
+            // Update officer data
+            const updatedOfficer = {
+              ...currentOfficer,
+              name: formData.name ?? currentOfficer.name,
+              designation: formData.designation ?? currentOfficer.designation,
+              zone: formData.zone ?? currentOfficer.zone,
+              contactNumber: formData.contactNumber ?? currentOfficer.contactNumber
+            };
+            await officerAPI.update(editingId, updatedOfficer);
+            alert('Officer data updated successfully!');
+          }
+        }
       } else {
         await officerAPI.create(formData as Omit<ForestOfficer, 'id'>);
         alert('Officer added successfully!');
       }
       setEditingId(null);
       setShowAddForm(false);
+      setShowEditStatusForm(false);
+      setShowUpdateDataForm(false);
       setFormData({});
       await fetchOfficers();
     } catch (error) {
@@ -71,11 +111,15 @@ export default function OfficersPage() {
   const handleCancel = () => {
     setEditingId(null);
     setShowAddForm(false);
+    setShowEditStatusForm(false);
+    setShowUpdateDataForm(false);
     setFormData({});
   };
 
   const handleAddNew = () => {
     setShowAddForm(true);
+    setShowEditStatusForm(false);
+    setShowUpdateDataForm(false);
     setEditingId(null);
     setFormData({
       name: '',
@@ -152,7 +196,7 @@ export default function OfficersPage() {
               placeholder="Filter by Zone"
               value={filterZone}
               onChange={(e) => setFilterZone(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
             />
             <button
               onClick={filterActive}
@@ -177,62 +221,121 @@ export default function OfficersPage() {
           </div>
         </div>
 
-        {(showAddForm || editingId) && (
+        {(showAddForm || showEditStatusForm || showUpdateDataForm) && (
           <div className="bg-white rounded-lg shadow-xl p-8 mb-6 border-l-4 border-blue-600">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              {editingId ? 'Edit Officer' : 'Add New Officer'}
+              {showEditStatusForm ? 'Edit Officer Status' : showUpdateDataForm ? 'Update Officer Data' : 'Add New Officer'}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
-                <input
-                  type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., John Doe"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Designation</label>
-                <input
-                  type="text"
-                  value={formData.designation || ''}
-                  onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., Forest Ranger"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
-                <input
-                  type="text"
-                  value={formData.zone || ''}
-                  onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., Zone A"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
-                <input
-                  type="text"
-                  value={formData.contactNumber || ''}
-                  onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., +1234567890"
-                />
-              </div>
-              <div className="flex items-center">
+            {showEditStatusForm ? (
+              // Edit Status Form - Only Active Status
+              <div className="flex items-center gap-4 p-6 bg-blue-50 rounded-lg">
                 <input
                   type="checkbox"
                   checked={formData.isActive || false}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded"
+                  className="w-6 h-6 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded"
                 />
-                <label className="ml-3 text-sm font-semibold text-gray-700">Active Status</label>
+                <label className="text-lg font-semibold text-gray-700">Active Status</label>
+                <span className="ml-4 text-gray-600">({formData.isActive ? 'Currently Active' : 'Currently Inactive'})</span>
               </div>
-            </div>
+            ) : showUpdateDataForm ? (
+              // Update Data Form - All fields except status
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                  <input
+                    type="text"
+                  value={formData.name || ''}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  placeholder="e.g., John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Designation</label>
+                  <input
+                    type="text"
+                  value={formData.designation || ''}
+                  onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  placeholder="e.g., Forest Ranger"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
+                  <input
+                    type="text"
+                  value={formData.zone || ''}
+                  onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  placeholder="e.g., Zone A"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+                  <input
+                    type="text"
+                  value={formData.contactNumber || ''}
+                  onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  placeholder="e.g., +1234567890"
+                  />
+                </div>
+              </div>
+            ) : (
+              // Add New Form - All fields
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                  <input
+                    type="text"
+                    value={formData.name || ''}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Designation</label>
+                  <input
+                    type="text"
+                    value={formData.designation || ''}
+                    onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Forest Ranger"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
+                  <input
+                    type="text"
+                    value={formData.zone || ''}
+                    onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Zone A"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+                  <input
+                    type="text"
+                    value={formData.contactNumber || ''}
+                    onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., +1234567890"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive || false}
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                    className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded"
+                  />
+                  <label className="ml-3 text-sm font-semibold text-gray-700">Active Status</label>
+                </div>
+              </div>
+            )}
             <div className="flex gap-4 mt-6">
               <button
                 onClick={handleSave}
@@ -306,14 +409,22 @@ export default function OfficersPage() {
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
                           <button
-                            onClick={() => handleEdit(officer)}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm font-semibold"
+                            onClick={() => handleEditStatus(officer)}
+                            className="bg-purple-500 text-white px-3 py-2 rounded-lg hover:bg-purple-600 transition-colors text-sm font-semibold"
+                            title="Edit officer active/inactive status"
                           >
-                            Edit
+                            Edit Status
+                          </button>
+                          <button
+                            onClick={() => handleUpdateData(officer)}
+                            className="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition-colors text-sm font-semibold"
+                            title="Update officer information"
+                          >
+                            Update Data
                           </button>
                           <button
                             onClick={() => handleDelete(officer.id)}
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
+                            className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
                           </button>

@@ -140,7 +140,7 @@ export default function TreesPage() {
               placeholder="Filter by Zone"
               value={filterZone}
               onChange={(e) => setFilterZone(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
             />
             <div className="flex gap-2">
               <button
@@ -171,7 +171,7 @@ export default function TreesPage() {
                   type="text"
                   value={formData.species || ''}
                   onChange={(e) => setFormData({ ...formData, species: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                   placeholder="e.g., Oak"
                 />
               </div>
@@ -182,7 +182,7 @@ export default function TreesPage() {
                   step="0.1"
                   value={formData.height || 0}
                   onChange={(e) => setFormData({ ...formData, height: parseFloat(e.target.value) })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 />
               </div>
               <div>
@@ -191,7 +191,7 @@ export default function TreesPage() {
                   type="number"
                   value={formData.age || 0}
                   onChange={(e) => setFormData({ ...formData, age: parseInt(e.target.value) })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 />
               </div>
               <div>
@@ -200,7 +200,7 @@ export default function TreesPage() {
                   type="text"
                   value={formData.zone || ''}
                   onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                   placeholder="e.g., Zone A"
                 />
               </div>
@@ -209,7 +209,7 @@ export default function TreesPage() {
                 <select
                   value={formData.healthStatus || ''}
                   onChange={(e) => setFormData({ ...formData, healthStatus: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 >
                   <option value="">Select Status</option>
                   <option value="Healthy">Healthy</option>
@@ -224,7 +224,7 @@ export default function TreesPage() {
                   type="date"
                   value={formData.plantedDate || ''}
                   onChange={(e) => setFormData({ ...formData, plantedDate: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 />
               </div>
             </div>

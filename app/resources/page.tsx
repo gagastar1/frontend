@@ -139,7 +139,7 @@ export default function ResourcesPage() {
               placeholder="Filter by Type (e.g., Vehicle, Equipment, Tools)"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
             />
             <div className="flex gap-2">
               <button
@@ -170,7 +170,7 @@ export default function ResourcesPage() {
                   type="text"
                   value={formData.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                   placeholder="e.g., Forest Patrol Vehicle"
                 />
               </div>
@@ -179,7 +179,7 @@ export default function ResourcesPage() {
                 <select
                   value={formData.type || ''}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 >
                   <option value="">Select Type</option>
                   <option value="Vehicle">Vehicle</option>
@@ -195,7 +195,7 @@ export default function ResourcesPage() {
                   type="number"
                   value={formData.quantity || 0}
                   onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 />
               </div>
               <div>
@@ -204,7 +204,7 @@ export default function ResourcesPage() {
                   type="date"
                   value={formData.lastMaintenance || ''}
                   onChange={(e) => setFormData({ ...formData, lastMaintenance: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 />
               </div>
               <div>
@@ -213,7 +213,7 @@ export default function ResourcesPage() {
                   type="number"
                   value={formData.assignedOfficerId || ''}
                   onChange={(e) => setFormData({ ...formData, assignedOfficerId: e.target.value ? parseInt(e.target.value) : undefined })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                   placeholder="Officer ID"
                 />
               </div>

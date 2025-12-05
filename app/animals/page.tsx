@@ -184,14 +184,14 @@ export default function AnimalsPage() {
               placeholder="Filter by Zone"
               value={filterZone}
               onChange={(e) => setFilterZone(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
             />
             <input
               type="text"
               placeholder="Filter by Conservation Status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
             />
             <div className="flex gap-2">
               <button
@@ -222,28 +222,28 @@ export default function AnimalsPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Population Count</label>
                   <input
-                    type="number"
-                    value={formData.populationCount || 0}
-                    onChange={(e) => setFormData({ ...formData, populationCount: parseInt(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  type="number"
+                  value={formData.populationCount || 0}
+                  onChange={(e) => setFormData({ ...formData, populationCount: parseInt(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
                   <input
                     type="text"
-                    value={formData.zone || ''}
-                    onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    placeholder="e.g., Zone A"
+                  value={formData.zone || ''}
+                  onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
+                  placeholder="e.g., Zone A"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Conservation Status</label>
                   <select
-                    value={formData.conservationStatus || ''}
-                    onChange={(e) => setFormData({ ...formData, conservationStatus: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  value={formData.conservationStatus || ''}
+                  onChange={(e) => setFormData({ ...formData, conservationStatus: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
                   >
                     <option value="">Select Status</option>
                     <option value="Endangered">Endangered</option>
@@ -261,10 +261,10 @@ export default function AnimalsPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Species</label>
                   <input
                     type="text"
-                    value={formData.species || ''}
-                    onChange={(e) => setFormData({ ...formData, species: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    placeholder="e.g., Bengal Tiger"
+                  value={formData.species || ''}
+                  onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
+                  placeholder="e.g., Bengal Tiger"
                   />
                 </div>
                 <div>
@@ -305,9 +305,9 @@ export default function AnimalsPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Last Seen</label>
                   <input
                     type="date"
-                    value={formData.lastSeen || ''}
-                    onChange={(e) => setFormData({ ...formData, lastSeen: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  value={formData.lastSeen || ''}
+                  onChange={(e) => setFormData({ ...formData, lastSeen: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 text-black"
                   />
                 </div>
               </div>
