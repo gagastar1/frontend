@@ -31,7 +31,7 @@ export default function TreesPage() {
   };
 
   const handleEdit = (tree: Tree) => {
-    setEditingId(tree.id);
+    setEditingId(tree.treeId!);
     setFormData(tree);
     setShowAddForm(false);
   };
@@ -78,12 +78,16 @@ export default function TreesPage() {
     setShowAddForm(true);
     setEditingId(null);
     setFormData({
-      species: '',
-      height: 0,
-      age: 0,
+      commonName: '',
+      scientificName: '',
+      location: '',
       zone: '',
+      heightMeters: 0,
+      ageYears: 0,
+      diameterCm: 0,
       healthStatus: '',
-      plantedDate: new Date().toISOString().split('T')[0]
+      plantationDate: new Date().toISOString().split('T')[0],
+      treeType: ''
     });
   };
 
@@ -110,7 +114,15 @@ export default function TreesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 relative">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-10 z-0"
+        style={{ backgroundImage: 'url(/trees.png)' }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10">
       <header className="bg-green-700 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -118,7 +130,9 @@ export default function TreesPage() {
               <Link href="/" className="text-white hover:text-green-100 transition-colors">
                 ← Back
               </Link>
-              <span className="text-4xl">🌳</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white">
+                <img src="/trees-dashboard.png" alt="Trees" className="w-full h-full object-cover" />
+              </div>
               <h1 className="text-4xl font-bold">Trees Management</h1>
             </div>
             <button
@@ -166,13 +180,23 @@ export default function TreesPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Species</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Common Name</label>
                 <input
                   type="text"
-                  value={formData.species || ''}
-                  onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                  value={formData.commonName || ''}
+                  onChange={(e) => setFormData({ ...formData, commonName: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                   placeholder="e.g., Oak"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Scientific Name</label>
+                <input
+                  type="text"
+                  value={formData.scientificName || ''}
+                  onChange={(e) => setFormData({ ...formData, scientificName: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  placeholder="e.g., Quercus"
                 />
               </div>
               <div>
@@ -180,8 +204,8 @@ export default function TreesPage() {
                 <input
                   type="number"
                   step="0.1"
-                  value={formData.height || 0}
-                  onChange={(e) => setFormData({ ...formData, height: parseFloat(e.target.value) })}
+                  value={formData.heightMeters || 0}
+                  onChange={(e) => setFormData({ ...formData, heightMeters: parseFloat(e.target.value) })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 />
               </div>
@@ -189,9 +213,29 @@ export default function TreesPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Age (years)</label>
                 <input
                   type="number"
-                  value={formData.age || 0}
-                  onChange={(e) => setFormData({ ...formData, age: parseInt(e.target.value) })}
+                  value={formData.ageYears || 0}
+                  onChange={(e) => setFormData({ ...formData, ageYears: parseInt(e.target.value) })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Diameter (cm)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={formData.diameterCm || 0}
+                  onChange={(e) => setFormData({ ...formData, diameterCm: parseFloat(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                <input
+                  type="text"
+                  value={formData.location || ''}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  placeholder="e.g., North Forest Section 3"
                 />
               </div>
               <div>
@@ -203,6 +247,19 @@ export default function TreesPage() {
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                   placeholder="e.g., Zone A"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Tree Type</label>
+                <select
+                  value={formData.treeType || ''}
+                  onChange={(e) => setFormData({ ...formData, treeType: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                >
+                  <option value="">Select Type</option>
+                  <option value="Deciduous">Deciduous</option>
+                  <option value="Evergreen">Evergreen</option>
+                  <option value="Coniferous">Coniferous</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Health Status</label>
@@ -219,11 +276,11 @@ export default function TreesPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Planted Date</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Plantation Date</label>
                 <input
                   type="date"
-                  value={formData.plantedDate || ''}
-                  onChange={(e) => setFormData({ ...formData, plantedDate: e.target.value })}
+                  value={formData.plantationDate || ''}
+                  onChange={(e) => setFormData({ ...formData, plantationDate: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 />
               </div>
@@ -251,12 +308,13 @@ export default function TreesPage() {
               <thead className="bg-gradient-to-r from-green-700 to-green-600 text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">ID</th>
-                  <th className="px-6 py-4 text-left font-semibold">Species</th>
+                  <th className="px-6 py-4 text-left font-semibold">Common Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Scientific Name</th>
                   <th className="px-6 py-4 text-left font-semibold">Height (m)</th>
                   <th className="px-6 py-4 text-left font-semibold">Age (years)</th>
                   <th className="px-6 py-4 text-left font-semibold">Zone</th>
                   <th className="px-6 py-4 text-left font-semibold">Health Status</th>
-                  <th className="px-6 py-4 text-left font-semibold">Planted Date</th>
+                  <th className="px-6 py-4 text-left font-semibold">Plantation Date</th>
                   <th className="px-6 py-4 text-left font-semibold">Actions</th>
                 </tr>
               </thead>
@@ -271,22 +329,23 @@ export default function TreesPage() {
                   </tr>
                 ) : trees.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       No trees found. Add your first tree to get started!
                     </td>
                   </tr>
                 ) : (
                   trees.map((tree, index) => (
                     <tr
-                      key={tree.id}
+                      key={tree.treeId}
                       className={`hover:bg-green-50 transition-colors ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       }`}
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">{tree.id}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{tree.species}</td>
-                      <td className="px-6 py-4 text-gray-700">{tree.height}</td>
-                      <td className="px-6 py-4 text-gray-700">{tree.age}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{tree.treeId}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{tree.commonName}</td>
+                      <td className="px-6 py-4 text-gray-700">{tree.scientificName}</td>
+                      <td className="px-6 py-4 text-gray-700">{tree.heightMeters}</td>
+                      <td className="px-6 py-4 text-gray-700">{tree.ageYears}</td>
                       <td className="px-6 py-4 text-gray-700">{tree.zone}</td>
                       <td className="px-6 py-4">
                         <span
@@ -302,7 +361,7 @@ export default function TreesPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-gray-700">
-                        {tree.plantedDate ? new Date(tree.plantedDate).toLocaleDateString() : 'N/A'}
+                        {tree.plantationDate ? new Date(tree.plantationDate).toLocaleDateString() : 'N/A'}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
@@ -313,7 +372,7 @@ export default function TreesPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(tree.id)}
+                            onClick={() => handleDelete(tree.treeId!)}
                             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
@@ -348,11 +407,12 @@ export default function TreesPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Average Height</h3>
             <p className="text-3xl font-bold text-green-700">
-              {trees.length > 0 ? (trees.reduce((sum, t) => sum + (t.height || 0), 0) / trees.length).toFixed(1) : 0}m
+              {trees.length > 0 ? (trees.reduce((sum, t) => sum + (t.heightMeters || 0), 0) / trees.length).toFixed(1) : 0}m
             </p>
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

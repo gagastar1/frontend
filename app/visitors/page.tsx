@@ -32,7 +32,7 @@ export default function VisitorsPage() {
   };
 
   const handleEdit = (visitor: Visitor) => {
-    setEditingId(visitor.id);
+    setEditingId(visitor.visitorId!);
     setFormData(visitor);
     setShowAddForm(false);
   };
@@ -56,7 +56,7 @@ export default function VisitorsPage() {
         await visitorAPI.update(editingId, formData as Visitor);
         alert('Visitor updated successfully!');
       } else {
-        await visitorAPI.create(formData as Omit<Visitor, 'id'>);
+        await visitorAPI.create(formData as Omit<Visitor, 'visitorId'>);
         alert('Visitor added successfully!');
       }
       setEditingId(null);
@@ -79,11 +79,17 @@ export default function VisitorsPage() {
     setShowAddForm(true);
     setEditingId(null);
     setFormData({
-      name: '',
+      fullName: '',
       contactNumber: '',
+      email: '',
       visitDate: new Date().toISOString().split('T')[0],
-      zone: '',
-      permitNumber: ''
+      entryTime: '',
+      exitTime: '',
+      visitorType: '',
+      groupSize: 1,
+      permitNumber: '',
+      zoneVisited: '',
+      purpose: ''
     });
   };
 
@@ -120,7 +126,9 @@ export default function VisitorsPage() {
               <Link href="/" className="text-white hover:text-purple-100 transition-colors">
                 ← Back
               </Link>
-              <span className="text-4xl">🎫</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white">
+                <img src="/visitor-dashboard.png" alt="Visitors" className="w-full h-full object-cover" />
+              </div>
               <h1 className="text-4xl font-bold">Visitors Management</h1>
             </div>
             <button
@@ -181,11 +189,11 @@ export default function VisitorsPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
                 <input
                   type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.fullName || ''}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                   placeholder="e.g., Jane Smith"
                 />
@@ -201,6 +209,16 @@ export default function VisitorsPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={formData.email || ''}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                  placeholder="e.g., jane.smith@email.com"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Visit Date</label>
                 <input
                   type="date"
@@ -210,13 +228,44 @@ export default function VisitorsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Entry Time</label>
                 <input
-                  type="text"
-                  value={formData.zone || ''}
-                  onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
+                  type="time"
+                  value={formData.entryTime || ''}
+                  onChange={(e) => setFormData({ ...formData, entryTime: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
-                  placeholder="e.g., Zone A"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Exit Time</label>
+                <input
+                  type="time"
+                  value={formData.exitTime || ''}
+                  onChange={(e) => setFormData({ ...formData, exitTime: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Visitor Type</label>
+                <select
+                  value={formData.visitorType || ''}
+                  onChange={(e) => setFormData({ ...formData, visitorType: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                >
+                  <option value="">Select Type</option>
+                  <option value="Tourist">Tourist</option>
+                  <option value="Researcher">Researcher</option>
+                  <option value="Student">Student</option>
+                  <option value="Official">Official</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Group Size</label>
+                <input
+                  type="number"
+                  value={formData.groupSize || 1}
+                  onChange={(e) => setFormData({ ...formData, groupSize: parseInt(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                 />
               </div>
               <div>
@@ -227,6 +276,26 @@ export default function VisitorsPage() {
                   onChange={(e) => setFormData({ ...formData, permitNumber: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                   placeholder="e.g., PER-2025-001"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Zone Visited</label>
+                <input
+                  type="text"
+                  value={formData.zoneVisited || ''}
+                  onChange={(e) => setFormData({ ...formData, zoneVisited: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                  placeholder="e.g., Zone A"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Purpose</label>
+                <input
+                  type="text"
+                  value={formData.purpose || ''}
+                  onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                  placeholder="e.g., Wildlife Photography"
                 />
               </div>
             </div>
@@ -253,10 +322,12 @@ export default function VisitorsPage() {
               <thead className="bg-gradient-to-r from-purple-700 to-purple-600 text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">ID</th>
-                  <th className="px-6 py-4 text-left font-semibold">Name</th>
-                  <th className="px-6 py-4 text-left font-semibold">Contact Number</th>
+                  <th className="px-6 py-4 text-left font-semibold">Full Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Contact</th>
                   <th className="px-6 py-4 text-left font-semibold">Visit Date</th>
-                  <th className="px-6 py-4 text-left font-semibold">Zone</th>
+                  <th className="px-6 py-4 text-left font-semibold">Visitor Type</th>
+                  <th className="px-6 py-4 text-left font-semibold">Group Size</th>
+                  <th className="px-6 py-4 text-left font-semibold">Zone Visited</th>
                   <th className="px-6 py-4 text-left font-semibold">Permit Number</th>
                   <th className="px-6 py-4 text-left font-semibold">Actions</th>
                 </tr>
@@ -264,7 +335,7 @@ export default function VisitorsPage() {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700"></div>
                       </div>
@@ -272,25 +343,31 @@ export default function VisitorsPage() {
                   </tr>
                 ) : visitors.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       No visitors found. Add your first visitor to get started!
                     </td>
                   </tr>
                 ) : (
                   visitors.map((visitor, index) => (
                     <tr
-                      key={visitor.id}
+                      key={visitor.visitorId}
                       className={`hover:bg-purple-50 transition-colors ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       }`}
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">{visitor.id}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{visitor.name}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{visitor.visitorId}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{visitor.fullName}</td>
                       <td className="px-6 py-4 text-gray-700">{visitor.contactNumber}</td>
                       <td className="px-6 py-4 text-gray-700">
                         {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : 'N/A'}
                       </td>
-                      <td className="px-6 py-4 text-gray-700">{visitor.zone}</td>
+                      <td className="px-6 py-4">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                          {visitor.visitorType}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">{visitor.groupSize}</td>
+                      <td className="px-6 py-4 text-gray-700">{visitor.zoneVisited}</td>
                       <td className="px-6 py-4">
                         <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">
                           {visitor.permitNumber}
@@ -305,7 +382,7 @@ export default function VisitorsPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(visitor.id)}
+                            onClick={() => handleDelete(visitor.visitorId!)}
                             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
@@ -337,7 +414,7 @@ export default function VisitorsPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Unique Zones</h3>
             <p className="text-3xl font-bold text-purple-700">
-              {new Set(visitors.map((v) => v.zone)).size}
+              {new Set(visitors.map((v) => v.zoneVisited)).size}
             </p>
           </div>
         </div>

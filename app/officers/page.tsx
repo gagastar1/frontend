@@ -33,19 +33,20 @@ export default function OfficersPage() {
   };
 
   const handleEditStatus = (officer: ForestOfficer) => {
-    setEditingId(officer.id);
-    setFormData({ isActive: officer.isActive });
+    setEditingId(officer.officerId!);
+    setFormData({ status: officer.status });
     setShowAddForm(false);
     setShowEditStatusForm(true);
     setShowUpdateDataForm(false);
   };
 
   const handleUpdateData = (officer: ForestOfficer) => {
-    setEditingId(officer.id);
+    setEditingId(officer.officerId!);
     setFormData({
-      name: officer.name,
+      firstName: officer.firstName,
+      lastName: officer.lastName,
       designation: officer.designation,
-      zone: officer.zone,
+      assignedZone: officer.assignedZone,
       contactNumber: officer.contactNumber
     });
     setShowAddForm(false);
@@ -69,13 +70,13 @@ export default function OfficersPage() {
   const handleSave = async () => {
     try {
       if (editingId && (showEditStatusForm || showUpdateDataForm)) {
-        const currentOfficer = officers.find(o => o.id === editingId);
+        const currentOfficer = officers.find(o => o.officerId === editingId);
         if (currentOfficer) {
           if (showEditStatusForm) {
             // Update only status
             const updatedOfficer = {
               ...currentOfficer,
-              isActive: formData.isActive ?? currentOfficer.isActive
+              status: formData.status ?? currentOfficer.status
             };
             await officerAPI.update(editingId, updatedOfficer);
             alert('Officer status updated successfully!');
@@ -83,9 +84,10 @@ export default function OfficersPage() {
             // Update officer data
             const updatedOfficer = {
               ...currentOfficer,
-              name: formData.name ?? currentOfficer.name,
+              firstName: formData.firstName ?? currentOfficer.firstName,
+              lastName: formData.lastName ?? currentOfficer.lastName,
               designation: formData.designation ?? currentOfficer.designation,
-              zone: formData.zone ?? currentOfficer.zone,
+              assignedZone: formData.assignedZone ?? currentOfficer.assignedZone,
               contactNumber: formData.contactNumber ?? currentOfficer.contactNumber
             };
             await officerAPI.update(editingId, updatedOfficer);
@@ -93,7 +95,7 @@ export default function OfficersPage() {
           }
         }
       } else {
-        await officerAPI.create(formData as Omit<ForestOfficer, 'id'>);
+        await officerAPI.create(formData as Omit<ForestOfficer, 'officerId'>);
         alert('Officer added successfully!');
       }
       setEditingId(null);
@@ -122,11 +124,16 @@ export default function OfficersPage() {
     setShowUpdateDataForm(false);
     setEditingId(null);
     setFormData({
-      name: '',
+      firstName: '',
+      lastName: '',
+      employeeId: '',
       designation: '',
-      zone: '',
+      department: '',
+      assignedZone: '',
       contactNumber: '',
-      isActive: true
+      email: '',
+      joiningDate: new Date().toISOString().split('T')[0],
+      status: 'Active'
     });
   };
 
@@ -166,15 +173,25 @@ export default function OfficersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 relative">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-10 z-0"
+        style={{ backgroundImage: 'url(/officers.png)' }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10">
       <header className="bg-blue-700 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link href="/" className="text-white hover:text-blue-100 transition-colors">
+              <Link href="/dashboard" className="text-white hover:text-blue-100 transition-colors">
                 ← Back
               </Link>
-              <span className="text-4xl">👮</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white">
+                <img src="/officers.png" alt="Officers" className="w-full h-full object-cover" />
+              </div>
               <h1 className="text-4xl font-bold">Forest Officers Management</h1>
             </div>
             <button
@@ -227,28 +244,41 @@ export default function OfficersPage() {
               {showEditStatusForm ? 'Edit Officer Status' : showUpdateDataForm ? 'Update Officer Data' : 'Add New Officer'}
             </h2>
             {showEditStatusForm ? (
-              // Edit Status Form - Only Active Status
+              // Edit Status Form - Only Status
               <div className="flex items-center gap-4 p-6 bg-blue-50 rounded-lg">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive || false}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-6 h-6 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded"
-                />
-                <label className="text-lg font-semibold text-gray-700">Active Status</label>
-                <span className="ml-4 text-gray-600">({formData.isActive ? 'Currently Active' : 'Currently Inactive'})</span>
+                <select
+                  value={formData.status || ''}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                >
+                  <option value="">Select Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="On Leave">On Leave</option>
+                  <option value="Retired">Retired</option>
+                </select>
               </div>
             ) : showUpdateDataForm ? (
               // Update Data Form - All fields except status
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
                   <input
                     type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.firstName || ''}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                  placeholder="e.g., John Doe"
+                  placeholder="e.g., John"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+                  <input
+                    type="text"
+                  value={formData.lastName || ''}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  placeholder="e.g., Doe"
                   />
                 </div>
                 <div>
@@ -262,11 +292,11 @@ export default function OfficersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Assigned Zone</label>
                   <input
                     type="text"
-                  value={formData.zone || ''}
-                  onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
+                  value={formData.assignedZone || ''}
+                  onChange={(e) => setFormData({ ...formData, assignedZone: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                   placeholder="e.g., Zone A"
                   />
@@ -286,13 +316,33 @@ export default function OfficersPage() {
               // Add New Form - All fields
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
                   <input
                     type="text"
-                    value={formData.name || ''}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., John Doe"
+                    value={formData.firstName || ''}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    placeholder="e.g., John"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+                  <input
+                    type="text"
+                    value={formData.lastName || ''}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    placeholder="e.g., Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Employee ID</label>
+                  <input
+                    type="text"
+                    value={formData.employeeId || ''}
+                    onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    placeholder="e.g., EMP001"
                   />
                 </div>
                 <div>
@@ -301,17 +351,27 @@ export default function OfficersPage() {
                     type="text"
                     value={formData.designation || ''}
                     onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="e.g., Forest Ranger"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Zone</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Department</label>
                   <input
                     type="text"
-                    value={formData.zone || ''}
-                    onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={formData.department || ''}
+                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    placeholder="e.g., Wildlife Conservation"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Assigned Zone</label>
+                  <input
+                    type="text"
+                    value={formData.assignedZone || ''}
+                    onChange={(e) => setFormData({ ...formData, assignedZone: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="e.g., Zone A"
                   />
                 </div>
@@ -321,18 +381,42 @@ export default function OfficersPage() {
                     type="text"
                     value={formData.contactNumber || ''}
                     onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="e.g., +1234567890"
                   />
                 </div>
-                <div className="flex items-center">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                   <input
-                    type="checkbox"
-                    checked={formData.isActive || false}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded"
+                    type="email"
+                    value={formData.email || ''}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    placeholder="e.g., john.doe@forest.gov"
                   />
-                  <label className="ml-3 text-sm font-semibold text-gray-700">Active Status</label>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Joining Date</label>
+                  <input
+                    type="date"
+                    value={formData.joiningDate || ''}
+                    onChange={(e) => setFormData({ ...formData, joiningDate: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                  <select
+                    value={formData.status || ''}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="On Leave">On Leave</option>
+                    <option value="Retired">Retired</option>
+                  </select>
                 </div>
               </div>
             )}
@@ -360,8 +444,9 @@ export default function OfficersPage() {
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">ID</th>
                   <th className="px-6 py-4 text-left font-semibold">Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Employee ID</th>
                   <th className="px-6 py-4 text-left font-semibold">Designation</th>
-                  <th className="px-6 py-4 text-left font-semibold">Zone</th>
+                  <th className="px-6 py-4 text-left font-semibold">Assigned Zone</th>
                   <th className="px-6 py-4 text-left font-semibold">Contact Number</th>
                   <th className="px-6 py-4 text-left font-semibold">Status</th>
                   <th className="px-6 py-4 text-left font-semibold">Actions</th>
@@ -370,7 +455,7 @@ export default function OfficersPage() {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
                       </div>
@@ -378,32 +463,33 @@ export default function OfficersPage() {
                   </tr>
                 ) : officers.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                       No officers found. Add your first officer to get started!
                     </td>
                   </tr>
                 ) : (
                   officers.map((officer, index) => (
                     <tr
-                      key={officer.id}
+                      key={officer.officerId}
                       className={`hover:bg-blue-50 transition-colors ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       }`}
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">{officer.id}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{officer.name}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{officer.officerId}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{officer.firstName} {officer.lastName}</td>
+                      <td className="px-6 py-4 text-gray-700">{officer.employeeId}</td>
                       <td className="px-6 py-4 text-gray-700">{officer.designation}</td>
-                      <td className="px-6 py-4 text-gray-700">{officer.zone}</td>
+                      <td className="px-6 py-4 text-gray-700">{officer.assignedZone}</td>
                       <td className="px-6 py-4 text-gray-700">{officer.contactNumber}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            officer.isActive
+                            officer.status === 'Active'
                               ? 'bg-green-100 text-green-800'
                               : 'bg-gray-100 text-gray-800'
                           }`}
                         >
-                          {officer.isActive ? 'Active' : 'Inactive'}
+                          {officer.status}
                         </span>
                       </td>
                       <td className="px-6 py-4">
@@ -411,7 +497,7 @@ export default function OfficersPage() {
                           <button
                             onClick={() => handleEditStatus(officer)}
                             className="bg-purple-500 text-white px-3 py-2 rounded-lg hover:bg-purple-600 transition-colors text-sm font-semibold"
-                            title="Edit officer active/inactive status"
+                            title="Edit officer status"
                           >
                             Edit Status
                           </button>
@@ -423,7 +509,7 @@ export default function OfficersPage() {
                             Update Data
                           </button>
                           <button
-                            onClick={() => handleDelete(officer.id)}
+                            onClick={() => handleDelete(officer.officerId!)}
                             className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
@@ -446,17 +532,18 @@ export default function OfficersPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Active Officers</h3>
             <p className="text-3xl font-bold text-green-600">
-              {officers.filter((o) => o.isActive).length}
+              {officers.filter((o) => o.status === 'Active').length}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Unique Zones</h3>
             <p className="text-3xl font-bold text-blue-700">
-              {new Set(officers.map((o) => o.zone)).size}
+              {new Set(officers.map((o) => o.assignedZone)).size}
             </p>
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

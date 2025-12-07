@@ -31,7 +31,7 @@ export default function ResourcesPage() {
   };
 
   const handleEdit = (resource: Resource) => {
-    setEditingId(resource.id);
+    setEditingId(resource.resourceId!);
     setFormData(resource);
     setShowAddForm(false);
   };
@@ -55,7 +55,7 @@ export default function ResourcesPage() {
         await resourceAPI.update(editingId, formData as Resource);
         alert('Resource updated successfully!');
       } else {
-        await resourceAPI.create(formData as Omit<Resource, 'id'>);
+        await resourceAPI.create(formData as Omit<Resource, 'resourceId'>);
         alert('Resource added successfully!');
       }
       setEditingId(null);
@@ -78,11 +78,17 @@ export default function ResourcesPage() {
     setShowAddForm(true);
     setEditingId(null);
     setFormData({
-      name: '',
-      type: '',
+      resourceName: '',
+      resourceType: '',
       quantity: 0,
-      lastMaintenance: new Date().toISOString().split('T')[0],
-      assignedOfficerId: undefined
+      unit: '',
+      location: '',
+      assignedZone: '',
+      conditionStatus: '',
+      purchaseDate: new Date().toISOString().split('T')[0],
+      lastMaintenanceDate: '',
+      nextMaintenanceDate: '',
+      cost: 0
     });
   };
 
@@ -117,7 +123,9 @@ export default function ResourcesPage() {
               <Link href="/" className="text-white hover:text-red-100 transition-colors">
                 ← Back
               </Link>
-              <span className="text-4xl">🛠️</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white">
+                <img src="/resources-dashboard.png" alt="Resources" className="w-full h-full object-cover" />
+              </div>
               <h1 className="text-4xl font-bold">Resources Management</h1>
             </div>
             <button
@@ -165,20 +173,20 @@ export default function ResourcesPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Resource Name</label>
                 <input
                   type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.resourceName || ''}
+                  onChange={(e) => setFormData({ ...formData, resourceName: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                   placeholder="e.g., Forest Patrol Vehicle"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Type</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Resource Type</label>
                 <select
-                  value={formData.type || ''}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  value={formData.resourceType || ''}
+                  onChange={(e) => setFormData({ ...formData, resourceType: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 >
                   <option value="">Select Type</option>
@@ -199,22 +207,85 @@ export default function ResourcesPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Last Maintenance</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Unit</label>
                 <input
-                  type="date"
-                  value={formData.lastMaintenance || ''}
-                  onChange={(e) => setFormData({ ...formData, lastMaintenance: e.target.value })}
+                  type="text"
+                  value={formData.unit || ''}
+                  onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
+                  placeholder="e.g., pcs, kg, liters"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                <input
+                  type="text"
+                  value={formData.location || ''}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
+                  placeholder="e.g., Storage Room A"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Assigned Zone</label>
+                <input
+                  type="text"
+                  value={formData.assignedZone || ''}
+                  onChange={(e) => setFormData({ ...formData, assignedZone: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
+                  placeholder="e.g., Zone A"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Condition Status</label>
+                <select
+                  value={formData.conditionStatus || ''}
+                  onChange={(e) => setFormData({ ...formData, conditionStatus: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
+                >
+                  <option value="">Select Condition</option>
+                  <option value="Excellent">Excellent</option>
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                  <option value="Poor">Poor</option>
+                  <option value="Needs Repair">Needs Repair</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Cost</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.cost || 0}
+                  onChange={(e) => setFormData({ ...formData, cost: parseFloat(e.target.value) })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Assigned Officer ID (Optional)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Purchase Date</label>
                 <input
-                  type="number"
-                  value={formData.assignedOfficerId || ''}
-                  onChange={(e) => setFormData({ ...formData, assignedOfficerId: e.target.value ? parseInt(e.target.value) : undefined })}
+                  type="date"
+                  value={formData.purchaseDate || ''}
+                  onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
-                  placeholder="Officer ID"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Last Maintenance Date</label>
+                <input
+                  type="date"
+                  value={formData.lastMaintenanceDate || ''}
+                  onChange={(e) => setFormData({ ...formData, lastMaintenanceDate: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Next Maintenance Date</label>
+                <input
+                  type="date"
+                  value={formData.nextMaintenanceDate || ''}
+                  onChange={(e) => setFormData({ ...formData, nextMaintenanceDate: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 />
               </div>
             </div>
@@ -241,18 +312,20 @@ export default function ResourcesPage() {
               <thead className="bg-gradient-to-r from-red-700 to-red-600 text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">ID</th>
-                  <th className="px-6 py-4 text-left font-semibold">Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Resource Name</th>
                   <th className="px-6 py-4 text-left font-semibold">Type</th>
                   <th className="px-6 py-4 text-left font-semibold">Quantity</th>
-                  <th className="px-6 py-4 text-left font-semibold">Last Maintenance</th>
-                  <th className="px-6 py-4 text-left font-semibold">Assigned Officer</th>
+                  <th className="px-6 py-4 text-left font-semibold">Unit</th>
+                  <th className="px-6 py-4 text-left font-semibold">Location</th>
+                  <th className="px-6 py-4 text-left font-semibold">Assigned Zone</th>
+                  <th className="px-6 py-4 text-left font-semibold">Condition</th>
                   <th className="px-6 py-4 text-left font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
                       </div>
@@ -260,37 +333,38 @@ export default function ResourcesPage() {
                   </tr>
                 ) : resources.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       No resources found. Add your first resource to get started!
                     </td>
                   </tr>
                 ) : (
                   resources.map((resource, index) => (
                     <tr
-                      key={resource.id}
+                      key={resource.resourceId}
                       className={`hover:bg-red-50 transition-colors ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       }`}
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">{resource.id}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{resource.name}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{resource.resourceId}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{resource.resourceName}</td>
                       <td className="px-6 py-4">
                         <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
-                          {resource.type}
+                          {resource.resourceType}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-gray-700">{resource.quantity}</td>
-                      <td className="px-6 py-4 text-gray-700">
-                        {resource.lastMaintenance ? new Date(resource.lastMaintenance).toLocaleDateString() : 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 text-gray-700">
-                        {resource.assignedOfficerId ? (
-                          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                            Officer #{resource.assignedOfficerId}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">Unassigned</span>
-                        )}
+                      <td className="px-6 py-4 text-gray-700">{resource.unit}</td>
+                      <td className="px-6 py-4 text-gray-700">{resource.location}</td>
+                      <td className="px-6 py-4 text-gray-700">{resource.assignedZone}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          resource.conditionStatus === 'Excellent' ? 'bg-green-100 text-green-800' :
+                          resource.conditionStatus === 'Good' ? 'bg-blue-100 text-blue-800' :
+                          resource.conditionStatus === 'Fair' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {resource.conditionStatus}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
@@ -301,7 +375,7 @@ export default function ResourcesPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(resource.id)}
+                            onClick={() => handleDelete(resource.resourceId!)}
                             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
@@ -328,15 +402,15 @@ export default function ResourcesPage() {
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-gray-600 text-sm font-semibold mb-2">Assigned</h3>
+            <h3 className="text-gray-600 text-sm font-semibold mb-2">Total Cost</h3>
             <p className="text-3xl font-bold text-green-600">
-              {resources.filter((r) => r.assignedOfficerId).length}
+              ${resources.reduce((sum, r) => sum + (r.cost || 0), 0).toFixed(2)}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Unique Types</h3>
             <p className="text-3xl font-bold text-red-700">
-              {new Set(resources.map((r) => r.type)).size}
+              {new Set(resources.map((r) => r.resourceType)).size}
             </p>
           </div>
         </div>

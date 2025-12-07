@@ -9,7 +9,15 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 relative">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20 z-0"
+        style={{ backgroundImage: 'url(/dashboard.png)' }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10">
       {/* Header */}
       <header className="bg-green-700 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
@@ -42,7 +50,12 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Animals Module */}
           <Link href="/animals" className="group">
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-orange-500">
+            <div className="relative overflow-hidden bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-orange-500">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 group-hover:opacity-30 transition-opacity duration-300"
+                style={{ backgroundImage: 'url(/animals-dashboard.png)' }}
+              />
+              <div className="relative z-10">
               <div className="flex items-center mb-4">
                 <span className="text-4xl mr-3">🦁</span>
                 <h3 className="text-2xl font-bold text-gray-800">Animals</h3>
@@ -51,12 +64,18 @@ export default function Dashboard() {
               <div className="mt-4 text-orange-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
                 Manage Animals →
               </div>
+              </div>
             </div>
           </Link>
 
           {/* Trees Module */}
           <Link href="/trees" className="group">
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-green-600">
+            <div className="relative overflow-hidden bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-green-600">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 group-hover:opacity-30 transition-opacity duration-300"
+                style={{ backgroundImage: 'url(/trees-dashboard.png)' }}
+              />
+              <div className="relative z-10">
               <div className="flex items-center mb-4">
                 <span className="text-4xl mr-3">🌳</span>
                 <h3 className="text-2xl font-bold text-gray-800">Trees</h3>
@@ -65,12 +84,18 @@ export default function Dashboard() {
               <div className="mt-4 text-green-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
                 Manage Trees →
               </div>
+              </div>
             </div>
           </Link>
 
           {/* Plants Module */}
           <Link href="/plants" className="group">
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-emerald-500">
+            <div className="relative overflow-hidden bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-emerald-500">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 group-hover:opacity-30 transition-opacity duration-300"
+                style={{ backgroundImage: 'url(/plants.png)' }}
+              />
+              <div className="relative z-10">
               <div className="flex items-center mb-4">
                 <span className="text-4xl mr-3">🌿</span>
                 <h3 className="text-2xl font-bold text-gray-800">Plants</h3>
@@ -79,12 +104,18 @@ export default function Dashboard() {
               <div className="mt-4 text-emerald-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
                 Manage Plants →
               </div>
+              </div>
             </div>
           </Link>
 
           {/* Forest Officers Module */}
           <Link href="/officers" className="group">
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-blue-600">
+            <div className="relative overflow-hidden bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-blue-600">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 group-hover:opacity-30 transition-opacity duration-300"
+                style={{ backgroundImage: 'url(/officers.png)' }}
+              />
+              <div className="relative z-10">
               <div className="flex items-center mb-4">
                 <span className="text-4xl mr-3">👮</span>
                 <h3 className="text-2xl font-bold text-gray-800">Forest Officers</h3>
@@ -93,12 +124,18 @@ export default function Dashboard() {
               <div className="mt-4 text-blue-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
                 Manage Officers →
               </div>
+              </div>
             </div>
           </Link>
 
           {/* Visitors Module */}
           <Link href="/visitors" className="group">
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-purple-600">
+            <div className="relative overflow-hidden bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-purple-600">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 group-hover:opacity-30 transition-opacity duration-300"
+                style={{ backgroundImage: 'url(/visitor-dashboard.png)' }}
+              />
+              <div className="relative z-10">
               <div className="flex items-center mb-4">
                 <span className="text-4xl mr-3">🎫</span>
                 <h3 className="text-2xl font-bold text-gray-800">Visitors</h3>
@@ -107,12 +144,18 @@ export default function Dashboard() {
               <div className="mt-4 text-purple-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
                 Manage Visitors →
               </div>
+              </div>
             </div>
           </Link>
 
           {/* Resources Module */}
           <Link href="/resources" className="group">
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-red-600">
+            <div className="relative overflow-hidden bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-red-600">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 group-hover:opacity-30 transition-opacity duration-300"
+                style={{ backgroundImage: 'url(/resources-dashboard.png)' }}
+              />
+              <div className="relative z-10">
               <div className="flex items-center mb-4">
                 <span className="text-4xl mr-3">🛠️</span>
                 <h3 className="text-2xl font-bold text-gray-800">Resources</h3>
@@ -120,6 +163,7 @@ export default function Dashboard() {
               <p className="text-gray-600">Monitor equipment, vehicles, and resource allocation</p>
               <div className="mt-4 text-red-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
                 Manage Resources →
+              </div>
               </div>
             </div>
           </Link>
@@ -132,6 +176,7 @@ export default function Dashboard() {
           <p>&copy; 2025 Forest Management System. All rights reserved.</p>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

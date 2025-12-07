@@ -30,7 +30,7 @@ export default function PlantsPage() {
   };
 
   const handleEdit = (plant: Plant) => {
-    setEditingId(plant.id);
+    setEditingId(plant.plantId!);
     setFormData(plant);
     setShowAddForm(false);
   };
@@ -54,7 +54,7 @@ export default function PlantsPage() {
         await plantAPI.update(editingId, formData as Plant);
         alert('Plant updated successfully!');
       } else {
-        await plantAPI.create(formData as Omit<Plant, 'id'>);
+        await plantAPI.create(formData as Omit<Plant, 'plantId'>);
         alert('Plant added successfully!');
       }
       setEditingId(null);
@@ -77,10 +77,15 @@ export default function PlantsPage() {
     setShowAddForm(true);
     setEditingId(null);
     setFormData({
-      species: '',
-      coverage: 0,
-      medicinalUse: '',
-      zone: ''
+      commonName: '',
+      scientificName: '',
+      location: '',
+      zone: '',
+      plantType: '',
+      coverageAreaSqm: 0,
+      floweringSeason: '',
+      medicinalUse: false,
+      count: 0
     });
   };
 
@@ -98,15 +103,25 @@ export default function PlantsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
-      <header className="bg-emerald-600 text-white shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-50 relative">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-10 z-0"
+        style={{ backgroundImage: 'url(/plants.png)' }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10">
+      <header className="bg-teal-600 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link href="/" className="text-white hover:text-emerald-100 transition-colors">
+              <Link href="/dashboard" className="text-white hover:text-teal-100 transition-colors">
                 ← Back
               </Link>
-              <span className="text-4xl">🌿</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white">
+                <img src="/plants.png" alt="Plants" className="w-full h-full object-cover" />
+              </div>
               <h1 className="text-4xl font-bold">Plants Management</h1>
             </div>
             <button
@@ -145,33 +160,33 @@ export default function PlantsPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Species</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Common Name</label>
                 <input
                   type="text"
-                  value={formData.species || ''}
-                  onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                  value={formData.commonName || ''}
+                  onChange={(e) => setFormData({ ...formData, commonName: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
                   placeholder="e.g., Aloe Vera"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Coverage (sq m)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Scientific Name</label>
                 <input
-                  type="number"
-                  step="0.1"
-                  value={formData.coverage || 0}
-                  onChange={(e) => setFormData({ ...formData, coverage: parseFloat(e.target.value) })}
+                  type="text"
+                  value={formData.scientificName || ''}
+                  onChange={(e) => setFormData({ ...formData, scientificName: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                  placeholder="e.g., Aloe barbadensis"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Medicinal Use</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
                 <input
                   type="text"
-                  value={formData.medicinalUse || ''}
-                  onChange={(e) => setFormData({ ...formData, medicinalUse: e.target.value })}
+                  value={formData.location || ''}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-                  placeholder="e.g., Skin care, wound healing"
+                  placeholder="e.g., East Garden Section 2"
                 />
               </div>
               <div>
@@ -183,6 +198,59 @@ export default function PlantsPage() {
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
                   placeholder="e.g., Zone A"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Plant Type</label>
+                <select
+                  value={formData.plantType || ''}
+                  onChange={(e) => setFormData({ ...formData, plantType: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                >
+                  <option value="">Select Type</option>
+                  <option value="Herb">Herb</option>
+                  <option value="Shrub">Shrub</option>
+                  <option value="Grass">Grass</option>
+                  <option value="Fern">Fern</option>
+                  <option value="Vine">Vine</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Coverage Area (sq m)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={formData.coverageAreaSqm || 0}
+                  onChange={(e) => setFormData({ ...formData, coverageAreaSqm: parseFloat(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Flowering Season</label>
+                <input
+                  type="text"
+                  value={formData.floweringSeason || ''}
+                  onChange={(e) => setFormData({ ...formData, floweringSeason: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                  placeholder="e.g., Spring, Summer"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Count</label>
+                <input
+                  type="number"
+                  value={formData.count || 0}
+                  onChange={(e) => setFormData({ ...formData, count: parseInt(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                />
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.medicinalUse || false}
+                  onChange={(e) => setFormData({ ...formData, medicinalUse: e.target.checked })}
+                  className="w-5 h-5 text-emerald-600 focus:ring-2 focus:ring-emerald-500 rounded"
+                />
+                <label className="ml-3 text-sm font-semibold text-gray-700">Has Medicinal Use</label>
               </div>
             </div>
             <div className="flex gap-4 mt-6">
@@ -208,9 +276,12 @@ export default function PlantsPage() {
               <thead className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">ID</th>
-                  <th className="px-6 py-4 text-left font-semibold">Species</th>
+                  <th className="px-6 py-4 text-left font-semibold">Common Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Scientific Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Plant Type</th>
                   <th className="px-6 py-4 text-left font-semibold">Coverage (sq m)</th>
-                  <th className="px-6 py-4 text-left font-semibold">Medicinal Use</th>
+                  <th className="px-6 py-4 text-left font-semibold">Count</th>
+                  <th className="px-6 py-4 text-left font-semibold">Medicinal</th>
                   <th className="px-6 py-4 text-left font-semibold">Zone</th>
                   <th className="px-6 py-4 text-left font-semibold">Actions</th>
                 </tr>
@@ -218,7 +289,7 @@ export default function PlantsPage() {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
                       </div>
@@ -226,28 +297,35 @@ export default function PlantsPage() {
                   </tr>
                 ) : plants.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                       No plants found. Add your first plant to get started!
                     </td>
                   </tr>
                 ) : (
                   plants.map((plant, index) => (
                     <tr
-                      key={plant.id}
+                      key={plant.plantId}
                       className={`hover:bg-emerald-50 transition-colors ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       }`}
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">{plant.id}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{plant.species}</td>
-                      <td className="px-6 py-4 text-gray-700">{plant.coverage}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{plant.plantId}</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{plant.commonName}</td>
+                      <td className="px-6 py-4 text-gray-700">{plant.scientificName}</td>
+                      <td className="px-6 py-4">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                          {plant.plantType}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">{plant.coverageAreaSqm}</td>
+                      <td className="px-6 py-4 text-gray-700">{plant.count}</td>
                       <td className="px-6 py-4 text-gray-700">
                         {plant.medicinalUse ? (
                           <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                            {plant.medicinalUse}
+                            Yes
                           </span>
                         ) : (
-                          <span className="text-gray-400">N/A</span>
+                          <span className="text-gray-400">No</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-gray-700">{plant.zone}</td>
@@ -260,7 +338,7 @@ export default function PlantsPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(plant.id)}
+                            onClick={() => handleDelete(plant.plantId!)}
                             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold"
                           >
                             Delete
@@ -283,17 +361,18 @@ export default function PlantsPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Medicinal Plants</h3>
             <p className="text-3xl font-bold text-green-600">
-              {plants.filter((p) => p.medicinalUse && p.medicinalUse.trim() !== '').length}
+              {plants.filter((p) => p.medicinalUse).length}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-gray-600 text-sm font-semibold mb-2">Total Coverage</h3>
             <p className="text-3xl font-bold text-emerald-600">
-              {plants.reduce((sum, p) => sum + (p.coverage || 0), 0).toFixed(1)} sq m
+              {plants.reduce((sum, p) => sum + (p.coverageAreaSqm || 0), 0).toFixed(1)} sq m
             </p>
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

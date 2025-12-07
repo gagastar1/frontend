@@ -155,7 +155,15 @@ export default function AnimalsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 relative">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-10 z-0"
+        style={{ backgroundImage: 'url(/animal.png)' }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10">
       {/* Header */}
       <header className="bg-orange-600 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
@@ -164,7 +172,9 @@ export default function AnimalsPage() {
               <Link href="/" className="text-white hover:text-orange-100 transition-colors">
                 ← Back
               </Link>
-              <span className="text-4xl">🦁</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white">
+                <img src="/animals-dashboard.png" alt="Animals" className="w-full h-full object-cover" />
+              </div>
               <h1 className="text-4xl font-bold">Animals Management</h1>
             </div>
             <button
@@ -476,6 +486,7 @@ export default function AnimalsPage() {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }
